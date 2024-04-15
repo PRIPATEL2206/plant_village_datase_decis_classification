@@ -22,7 +22,7 @@ app.add_middleware(
 # (32, 923, 4) gain
 # (32, 256, 256, 3) expected
 # (634, 923, 4)
-model =tf.keras.models.load_model("C:/Users/baps/OneDrive/Desktop/Projects/aiml/projects/PatatoDecisesClacification/models/potatoes.h5")
+model =tf.keras.models.load_model("potatoes.h5")
 potato_classes=['Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy']
 
 
@@ -46,5 +46,5 @@ async def potatoDesisClasification(file:UploadFile = File(...)):
         }
 
 
-if __name__=='__main__':
-    uvicorn.run(app)
+# if __name__=='__main__':
+#     uvicorn.run(app)
