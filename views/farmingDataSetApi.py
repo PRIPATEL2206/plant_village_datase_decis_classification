@@ -1,17 +1,17 @@
+'''
+this is file that is made for farmerns for classifining decis in plant
+'''
 
-from io import BytesIO
-from  PIL import Image
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import tensorflow as tf
-import numpy as np
 import uvicorn
+from utils.middeleWare import origins
+from utils.response_utils import file_to_np_array, response_from_prediction
 
 app=FastAPI()
 
-origins = [
-    "*"
-]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -19,31 +19,50 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# (32, 923, 4) gain
-# (32, 256, 256, 3) expected
-# (634, 923, 4)
-model =tf.keras.models.load_model("models/potatoes.h5")
+
+
+#models
+potatoDecisClasificationModel =tf.keras.models.load_model("models/potatoes.h5")
 potato_classes=['Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy']
 
-
-def image_to_nparry(img):
-    img=Image.open(BytesIO(img)).convert("RGB").resize((256,256))
-    return np.array(img)
+pepperBellDecisClasificationModel =tf.keras.models.load_model("models/pepperBell.h5")
+pepper_bell_classes=['Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy']
 
 
+
+
+# routes
 @app.get("/")
 def hello():
     return "hello"
 
 @app.post("/api/potatoDecisClassifiction")
 async def potatoDesisClasification(files:list[UploadFile] = File(...)):
-    df= np.array([image_to_nparry(await file.read()) for file in files ])
-    pred_arr=model.predict(df)
+    try:
+        df= await file_to_np_array(files)
+        pred_arr=potatoDecisClasificationModel.predict(df)
 
-    return [ {
-        "class":potato_classes[np.argmax(pred)],
-        "confidence":float(pred.max())
-        } for pred in pred_arr]
+        return response_from_prediction(pred_arr,potato_classes)
+    
+    except Exception as e:
+        return {
+            "error":str(e)
+        }
+
+
+@app.post("/api/pepperBellDecisClassifiction")
+async def pepperBellDesisClasification(files:list[UploadFile] = File(...)):
+    try:
+        df= await file_to_np_array(files)
+        pred_arr=pepperBellDecisClasificationModel.predict(df)
+
+        return response_from_prediction(pred_arr,pepper_bell_classes)
+    
+    except Exception as e:
+        return {
+            "error":str(e)
+        }
+
 
 
 if __name__=='__main__':
