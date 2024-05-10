@@ -11,34 +11,40 @@
     <style>
         #dropContainer {
             border: 2px dotted black;
-            height: 20rem;
-            width: 30%;
+            height: 21rem;
+            width: 21rem;
             background: no-repeat;
-            background-size: contain;
-            /* background-image: url("images/drag-and-drop.png"); */
+            background-size: cover;
         }
     </style>
 </head>
 
 <body>
     <div class="container mt-5">
-        <div class="container d-flex justify-content-center align-items-center" id="dropContainer">
-            <!-- <img src=".//images/drag-and-drop.png" alt="Drop Image"> --> <b> Drop Your Images</b>
-        </div>
+
         <form id="upload-form" action="http://localhost:8000/api/potatoDecisClassifiction" method="post"
             enctype="multipart/form-data">
-            <input type="file" id="fileInput" accept="image/*" name="files" multiple style="display: none;">
-            <div class="d-flex justify-content-center mt-3">
-                <select id="model">
-                    <option value="0">Potato leaf </option>
-                    <option value="1">Pepper Bell leaf</option>
-                    <option value="2">tomato leaf</option>
-                </select>
-                <input type="submit" id="submit" class="btn btn-primary">
+            <div class="container d-flex justify-content-center">
+
+                <div class=" d-flex flex-column justify-content-center align-items-center  " id="dropContainer">
+                    <b id="numberOfFile" style="font-size: 25px;"> Drop Your Images</b>
+                    <input type="file" id="fileInput" accept="image/*" name="files" style="display: none;">
+                </div>
+                <div class="d-flex  mt-3 ms-5 flex-column justify-content-evenly">
+                    <select id="model">
+                        <option value="0">Potato leaf </option>
+                        <option value="1">Pepper Bell leaf</option>
+                        <option value="2">tomato leaf</option>
+                    </select>
+                    <button id="submit" class="btn btn-primary">Predict</button>
+                </div>
             </div>
         </form>
         <div id="result" class="my-5 d-flex flex-wrap justify-content-center">
+            <table class="table">
 
+
+            </table>
         </div>
     </div>
     <script>
@@ -58,6 +64,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data)
                     handleFiles(data, formData);
                 })
                 .catch(error => {
@@ -75,6 +82,9 @@
             fileInput.files = evt.dataTransfer.files;
             evt.preventDefault();
         };
+        document.getElementById("fileInput").onchange = (e) => {
+            numberOfFile.innerHTML = `${e.target.files.length} Images Selected`
+        }
 
         function handleFiles(predictions, files) {
             const result = document.getElementById('result');
@@ -88,15 +98,24 @@
                     reader.onload = () => {
                         var img = new Image();
                         img.src = reader.result;
+                        const classWiseConfidens = `
+                        <table class="table" >
+                            ${predictions[i].all.map(coc => `
+                                    <tr>
+                                <td >${coc.class.replaceAll("_", " ")} : </td>
+                                <td>${coc.confidence}</td>
+                                </tr>
+                                    `).join("")}
+                        </table>
+                        `
+
                         const card = `
                             <div class="card my-3 mx-3" style="width: 20rem;">
                                 <img src="${img.src}" 
                                     class="card-img-top" alt="...">
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Diseases :- ${predictions[i].class.replaceAll("_", " ")}</li>
-                                        <li class="list-group-item">Confidence :- ${(predictions[i].confidence * 100).toFixed(2)}</li>
-                                        <li class="list-group-item">File Name :- ${predictions[i].file_name}</li>
+                                        ${classWiseConfidens}
                                     </ul>
                                 </div>
                             </div>
