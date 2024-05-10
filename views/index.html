@@ -34,8 +34,8 @@
                     <option value="1">Pepper Bell leaf</option>
                     <option value="2">tomato leaf</option>
                 </select>
+                <input type="submit" id="submit" class="btn btn-primary">
             </div>
-            <input type="submit" id="submit" style="display: none;">
         </form>
         <div id="result" class="my-5 d-flex flex-wrap justify-content-center">
 
@@ -65,8 +65,6 @@
                 });
         };
 
-        document.getElementById("fileInput").onchange = () => document.getElementById("submit").click()
-
         dropContainer.ondragover = dropContainer.ondragenter = function (evt) {
             evt.preventDefault();
         };
@@ -75,7 +73,6 @@
         }
         dropContainer.ondrop = function (evt) {
             fileInput.files = evt.dataTransfer.files;
-            document.getElementById("submit").click()
             evt.preventDefault();
         };
 
@@ -122,8 +119,6 @@
         document.getElementById("model").onchange = (e) => {
             const index = e.target.value
             document.getElementById("upload-form").action = urls[index]
-            console.log(document.getElementById("upload-form").action);
-            document.getElementById("submit").click()
         }
         document.getElementById('upload-form').addEventListener('submit', getData)
 
