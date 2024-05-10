@@ -28,6 +28,13 @@
         <form id="upload-form" action="http://localhost:8000/api/potatoDecisClassifiction" method="post"
             enctype="multipart/form-data">
             <input type="file" id="fileInput" accept="image/*" name="files" multiple style="display: none;">
+            <div class="d-flex justify-content-center mt-3">
+                <select id="model">
+                    <option value="0">Potato leaf </option>
+                    <option value="1">Pepper Bell leaf</option>
+                    <option value="2">tomato leaf</option>
+                </select>
+            </div>
             <input type="submit" id="submit" style="display: none;">
         </form>
         <div id="result" class="my-5 d-flex flex-wrap justify-content-center">
@@ -35,9 +42,9 @@
         </div>
     </div>
     <script>
-        document.getElementById('upload-form').addEventListener('submit', function (event) {
+        const getData = (event, url = "") => {
             event.preventDefault();
-
+            console.log();
             var formData = new FormData();
             var files = document.getElementById('fileInput').files;
 
@@ -45,7 +52,7 @@
                 formData.append('files', files[i]);
             }
 
-            fetch('http://localhost:8000/api/potatoDecisClassifiction', {
+            fetch(event.target.action, {
                 method: 'POST',
                 body: formData
             })
@@ -56,7 +63,7 @@
                 .catch(error => {
                     console.error('Error:', error);
                 });
-        });
+        };
 
         document.getElementById("fileInput").onchange = () => document.getElementById("submit").click()
 
@@ -108,6 +115,17 @@
             })
 
         }
+        const urls = ["http://localhost:8000/api/potatoDecisClassifiction",
+            "http://localhost:8000/api/pepperBellDecisClassifiction",
+            "http://localhost:8000/api/tomatoDecisClassifiction"]
+
+        document.getElementById("model").onchange = (e) => {
+            const index = e.target.value
+            document.getElementById("upload-form").action = urls[index]
+            console.log(document.getElementById("upload-form").action);
+            document.getElementById("submit").click()
+        }
+        document.getElementById('upload-form').addEventListener('submit', getData)
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
