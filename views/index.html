@@ -80,6 +80,7 @@
         }
         dropContainer.ondrop = function (evt) {
             fileInput.files = evt.dataTransfer.files;
+            numberOfFile.innerHTML = `${evt.dataTransfer.files.length} Images Selected`
             evt.preventDefault();
         };
         document.getElementById("fileInput").onchange = (e) => {
@@ -87,6 +88,7 @@
         }
 
         function handleFiles(predictions, files) {
+            console.log(predictions);
             const result = document.getElementById('result');
             result.innerHTML = "";
             console.log(predictions);
@@ -116,6 +118,8 @@
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         ${classWiseConfidens}
+                                        <li class="list-group-item">Solution:</li>
+                                        <li class="list-group-item">${predictions[i].solution}</li>
                                     </ul>
                                 </div>
                             </div>
