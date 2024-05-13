@@ -3,3 +3,4 @@ fastapi
 uvicorn
 tensorflow
 numpy
+python-multipart
