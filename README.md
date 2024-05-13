@@ -53,7 +53,7 @@ My project is about predicting disease of  `Potato , Pepper Bell , Tomato` plant
 
 ### 7. you can also drag and drop images to drop box
 
-### 8. you can use images in dataset folder for testing
+### 8. you can use images in dataset folder for testing you can download from  `[dataset](https://www.kaggle.com/datasets/arjuntejaswi/plant-village)`
 
 ### 9. This will predict confidence score for all disease to be occur and give the solution accordingly
 
