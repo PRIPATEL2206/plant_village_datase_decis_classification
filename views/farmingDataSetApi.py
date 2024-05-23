@@ -91,7 +91,7 @@ def hello():
 async def plantDesisClassification(files:list[UploadFile] = File(...)):
     try:
         df= await files_to_np_array(files)
-        pred= classfyDesisUsingModel(
+        preds= classfyDesisUsingModel(
             df=df,
             model=models["plantClasificationModel"],
             classes=plants,
@@ -99,15 +99,20 @@ async def plantDesisClassification(files:list[UploadFile] = File(...)):
             solutions=plants,
             return_response=False
             )
-        pred_plant=plants[np.argmax(pred)]
-        response = classfyDesisUsingModel(
-            df=df,
-            model=models[pred_plant],
-            classes=desis[pred_plant],
-            files=files,
-            solutions=solutions[pred_plant],
-        )
-        response[0]["plant_confidence"]={i:float(j) for i,j in zip(plants,pred[0])}
+        print(np.array([df[0]]).shape)
+        pred_plants=[plants[ np.argmax(pred)] for pred in preds]
+
+        response=[]
+        for i, pred_plant in enumerate(pred_plants):
+            prediction_desis = classfyDesisUsingModel(
+                df=np.array([df[i]]),
+                model=models[pred_plant],
+                classes=desis[pred_plant],
+                files=[files[i]],
+                solutions=solutions[pred_plant],
+            )
+            prediction_desis[0]["plant_confidence"]={i:float(j) for i,j in zip(plants,preds[i])}
+            response.append(prediction_desis[0])
         return response
     except Exception as e:
         print(e)
