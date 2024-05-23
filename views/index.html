@@ -22,7 +22,7 @@
 <body>
     <div class="container mt-5">
 
-        <form id="upload-form" action="http://localhost:8000/api/potatoDecisClassifiction" method="post"
+        <form id="upload-form" action="http://localhost:8000/api/plantDecisClasification" method="post"
             enctype="multipart/form-data">
             <div class="container d-flex justify-content-center">
 
@@ -32,9 +32,10 @@
                 </div>
                 <div class="d-flex  mt-3 ms-5 flex-column justify-content-evenly">
                     <select id="model">
-                        <option value="0">Potato leaf </option>
-                        <option value="1">Pepper Bell leaf</option>
-                        <option value="2">tomato leaf</option>
+                        <option value="0">Any</option>
+                        <option value="1">Potato leaf </option>
+                        <option value="2">Pepper Bell leaf</option>
+                        <option value="3">tomato leaf</option>
                     </select>
                     <button id="submit" class="btn btn-primary">Predict</button>
                 </div>
@@ -101,6 +102,8 @@
                         var img = new Image();
                         img.src = reader.result;
                         const classWiseConfidens = `
+                        
+                        <li class="list-group-item"><b>Decis Confidence:</b></li>
                         <table class="table" >
                             ${predictions[i].all.map(coc => `
                                     <tr>
@@ -110,6 +113,24 @@
                                     `).join("")}
                         </table>
                         `
+                        // for all plant desis  prediction
+                        let plantConfidence = ``;
+                        if (predictions[i]["plant_confidence"]) {
+                            console.log(Object.keys(predictions[i].plant_confidence))
+                            plantConfidence = `
+                            <li class="list-group-item"><b>Plants Confidence:</b></li>
+                            <table class="table" >
+                            ${Object.keys(predictions[i].plant_confidence).map((plant) => `
+                                    <tr>
+                                <td >${plant.replaceAll("_", " ")} : </td>
+                                <td>${predictions[i].plant_confidence[plant]}</td>
+                                </tr>
+                                    `).join("")}
+                        </table>
+                            `
+                        }
+
+
 
                         const card = `
                             <div class="card my-3 mx-3" style="width: 20rem;">
@@ -117,8 +138,9 @@
                                     class="card-img-top" alt="...">
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
+                                        ${plantConfidence}
                                         ${classWiseConfidens}
-                                        <li class="list-group-item">Solution:</li>
+                                        <li class="list-group-item"><b>Solution:</b></li>
                                         <li class="list-group-item">${predictions[i].solution}</li>
                                     </ul>
                                 </div>
@@ -135,7 +157,9 @@
             })
 
         }
-        const urls = ["http://localhost:8000/api/potatoDecisClassifiction",
+        const urls = [
+            "http://localhost:8000/api/plantDecisClasification",
+            "http://localhost:8000/api/potatoDecisClassifiction",
             "http://localhost:8000/api/pepperBellDecisClassifiction",
             "http://localhost:8000/api/tomatoDecisClassifiction"]
 

@@ -87,7 +87,7 @@ def hello():
 
 
 
-@app.get("/api/plantDecisClasification")
+@app.post("/api/plantDecisClasification")
 async def plantDesisClassification(files:list[UploadFile] = File(...)):
     try:
         df= await files_to_np_array(files)
@@ -111,7 +111,7 @@ async def plantDesisClassification(files:list[UploadFile] = File(...)):
                 files=[files[i]],
                 solutions=solutions[pred_plant],
             )
-            prediction_desis[0]["plant_confidence"]={i:float(j) for i,j in zip(plants,preds[i])}
+            prediction_desis[0]["plant_confidence"]={i:round(float(j) ,4) for i,j in sorted(zip(plants,preds[i]), key= lambda x: x[1],reverse=True)}
             response.append(prediction_desis[0])
         return response
     except Exception as e:
