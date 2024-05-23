@@ -3,10 +3,11 @@ import numpy as np
 from .image_utils import image_to_nparry
 
 
-def response_from_prediction(pred_arr,classes,files_name,solutions):
+def response_from_prediction(pred_arr,classes,files,solutions):
     # print(solutions[np.argmax(pred_arr[0])])
+    file_names=[i.filename for i in files]
     ans= [ {
-        "file_name":files_name[i],
+        "file_name":file_names[i],
         "class":classes[np.argmax(preds)],
         "solution":solutions[np.argmax(preds)],
         "confidence":round(float(preds.max()),4),
@@ -17,7 +18,6 @@ def response_from_prediction(pred_arr,classes,files_name,solutions):
             }for j,pred in sorted(enumerate(preds), key=lambda x: x[1],reverse=True)
         ]
         } for i,preds in enumerate(pred_arr)]
-    # print(ans)
     return ans
 
 
