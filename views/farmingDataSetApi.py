@@ -28,7 +28,7 @@ plants=["pepperBell","potato","tomato"]
 ########################################## Models ###########################################################################
 
 models={
-        "plantClasificationModel" :tf.keras.models.load_model("models/plantClasificationModelWithImbalance.h5"),
+        "plantClasificationModel" :tf.keras.models.load_model("models/plantClasificationModelWithImbalance_accurecy_0.9957_epohs_20_.h5"),
         plants[0] :tf.keras.models.load_model("models/pepperBell.h5"),
         plants[1] :tf.keras.models.load_model("models/potatoes.h5"),
         plants[2] :tf.keras.models.load_model("models/tomatoPlant.h5")
